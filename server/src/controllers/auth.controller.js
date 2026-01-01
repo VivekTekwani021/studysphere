@@ -32,7 +32,8 @@ exports.register = async (req, res) => {
     });
 
     const token = generateToken(user._id);
-
+    user.token=token;
+    await user.save();
     res.status(201).json({
       success: true,
       token,
@@ -66,7 +67,8 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user._id);
-
+    user.token=token;
+    await user.save();
     res.status(200).json({
       success: true,
       token,

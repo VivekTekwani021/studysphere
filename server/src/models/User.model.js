@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       select: false
     },
-
+    token:String,
     educationLevel: {
       type: String,
       enum: ["school", "college"]
