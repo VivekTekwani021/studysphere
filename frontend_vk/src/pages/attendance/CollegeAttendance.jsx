@@ -124,9 +124,9 @@ const CollegeAttendance = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {subjects.map((sub) => (
-                <Card key={sub.name || sub._id} className="hover:shadow-md transition-shadow">
+                <Card key={sub.subjectName || sub._id} className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row justify-between items-start pb-2">
-                        <CardTitle className="text-lg">{sub.name}</CardTitle>
+                        <CardTitle className="text-lg">{sub.subjectName}</CardTitle>
                         <button 
                             onClick={() => handleDeleteSubject(sub.name)}
                             className="text-gray-400 hover:text-red-500"
