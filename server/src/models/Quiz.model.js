@@ -23,9 +23,11 @@ const quizSchema = new mongoose.Schema(
       required: true
     },
 
-    questions: [questionSchema],
+    // questions: [questionSchema],
 
-    answers: [String], // user answers (index-wise)
+    // answers: [String], // user answers (index-wise)
+    correctAnswer: Number,
+     answers: [Number],
 
     score: Number,
     accuracy: Number,

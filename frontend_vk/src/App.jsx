@@ -16,6 +16,10 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Onboarding from './pages/auth/Onboarding';
 import Dashboard from './pages/dashboard/Dashboard';
+import QuizHome from "./pages/quiz/QuizHome";
+import QuizAttempt from "./pages/quiz/QuizAttempt";
+import QuizResult from "./pages/quiz/QuizResult";
+
 
 function App() {
   return (
@@ -37,6 +41,13 @@ function App() {
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/placement" element={<Placement />} />
             <Route path="/profile" element={<Profile />} />
+
+            {/* quiz routes date 3 feb */}
+            <Route path="/quiz" element={<QuizHome />} />
+    <Route path="/quiz/attempt" element={<QuizAttempt />} />
+    <Route path="/quiz/result" element={<QuizResult />} />
+
+            
             {/* Add other routes here later */}
           </Route>
 

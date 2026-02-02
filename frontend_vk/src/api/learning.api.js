@@ -14,14 +14,14 @@ export const learningApi = {
     },
 
     // Generate quiz
-    generateQuiz: async (topic) => {
-        const response = await api.post('/quiz/generate', { topic });
-        return response.data;
-    },
+    // generateQuiz: async (topic) => {
+    //     const response = await api.post('/quiz/generate', { topic });
+    //     return response.data;
+    // },
 
-    // Submit quiz
-    submitQuiz: async (quizId, answers) => { // answers: { [questionId]: answerIndex }
-        const response = await api.post('/quiz/submit', { quizId, answers });
-        return response.data;
-    }
+    // // Submit quiz
+    // submitQuiz: async (quizId, answers) => { // answers: { [questionId]: answerIndex }
+    //     const response = await api.post('/quiz/submit', { quizId, answers });
+    //     return response.data;
+    // }
 };

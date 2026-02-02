@@ -1,5 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+// import { 
+//   LayoutDashboard, 
+//   CalendarCheck, 
+//   BookOpen, 
+//   CheckSquare, 
+//   Map, 
+//   Briefcase, 
+//   User,
+//   LogOut
+// } from 'lucide-react';
 import { 
   LayoutDashboard, 
   CalendarCheck, 
@@ -8,8 +18,10 @@ import {
   Map, 
   Briefcase, 
   User,
-  LogOut
+  LogOut,
+  HelpCircle
 } from 'lucide-react';
+
 import { useAuth } from '../../context/AuthContext';
 import { clsx } from 'clsx';
 
@@ -21,8 +33,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Attendance', icon: CalendarCheck, path: '/attendance' },
     { name: 'Learning Hub', icon: BookOpen, path: '/learning' },
+    { name: 'Quiz', icon: HelpCircle, path: '/quiz' },
     { name: 'Habit Tracker', icon: CheckSquare, path: '/habits' },
     { name: 'Roadmap', icon: Map, path: '/roadmap' },
+    
+    
   ];
 
   // Conditional placement link
