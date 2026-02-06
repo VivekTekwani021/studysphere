@@ -16,7 +16,9 @@ const ctrl = require("../controllers/roadmap.controller");
 const { protect } = require("../middleware/auth.middleware");
 
 router.post("/generate", protect, ctrl.generateRoadmap);
+router.get("/active", protect, ctrl.getActiveRoadmap);  // Full roadmap
 router.get("/today", protect, ctrl.getTodayTasks);
 router.post("/complete", protect, ctrl.completeTask);
 
 module.exports = router;
+

@@ -49,7 +49,7 @@
 //     <Route path="/quiz/attempt" element={<QuizAttempt />} />
 //     <Route path="/quiz/result" element={<QuizResult />} />
 
-            
+
 //             {/* Add other routes here later */}
 //           </Route>
 
@@ -66,12 +66,12 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Layout from './components/layout/Layout';
 
 // Pages
 import Attendance from './pages/attendance/Attendance';
-import Habits from './pages/habits/Habits';
 //import Roadmap from './pages/roadmap/RoadmapPage';
 import Placement from './pages/placement/Placement';
 import Profile from './pages/profile/Profile';
@@ -92,53 +92,58 @@ import LearningContent from './pages/learning/LearningContent';
 import YouTubeLearning from './pages/learning/YouTubeLearning';
 import GeneratePDF from './pages/learning/GeneratePDF';
 
-
+// ✅ ROADMAP PAGE
+import RoadmapPage from './pages/roadmap/RoadmapPage';
 
 
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <Toaster position="top-right" />
+      <ThemeProvider>
+        <AuthProvider>
+          <Toaster position="top-right" />
 
-        <Routes>
-          {/* 🌐 Public Routes */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/onboarding" element={<Onboarding />} />
+          <Routes>
+            {/* 🌐 Public Routes */}
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/onboarding" element={<Onboarding />} />
 
-          {/* 🔐 Protected Routes */}
-          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+            {/* 🔐 Protected Routes */}
+            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
 
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/attendance" element={<Attendance />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/attendance" element={<Attendance />} />
 
-            {/* 📚 LEARNING FLOW (CLEAN & SEPARATED) */}
-            <Route path="/learning" element={<LearningRoom />} />
-            <Route path="/learning/content" element={<LearningContent />} />
-            <Route path="/learning/youtube" element={<YouTubeLearning />} />
-            <Route path="/learning/pdf" element={<GeneratePDF />} />
+              {/* 📚 LEARNING FLOW (CLEAN & SEPARATED) */}
+              <Route path="/learning" element={<LearningRoom />} />
+              <Route path="/learning/content" element={<LearningContent />} />
+              <Route path="/learning/youtube" element={<YouTubeLearning />} />
+              <Route path="/learning/pdf" element={<GeneratePDF />} />
 
-            <Route path="/habits" element={<Habits />} />
-            
-            <Route path="/placement" element={<Placement />} />
-            <Route path="/profile" element={<Profile />} />
 
-            {/* 🧠 Quiz Routes (unchanged) */}
-            <Route path="/quiz" element={<QuizHome />} />
-            <Route path="/quiz/attempt" element={<QuizAttempt />} />
-            <Route path="/quiz/result" element={<QuizResult />} />
+              {/* 🗺️ Roadmap Route */}
+              <Route path="/roadmap" element={<RoadmapPage />} />
 
-         
+              <Route path="/placement" element={<Placement />} />
+              <Route path="/profile" element={<Profile />} />
 
-          </Route>
+              {/* 🧠 Quiz Routes (unchanged) */}
+              <Route path="/quiz" element={<QuizHome />} />
+              <Route path="/quiz/attempt" element={<QuizAttempt />} />
+              <Route path="/quiz/result" element={<QuizResult />} />
 
-          {/* ❌ Catch-all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
 
-      </AuthProvider>
+
+            </Route>
+
+            {/* ❌ Catch-all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

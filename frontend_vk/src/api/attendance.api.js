@@ -28,13 +28,19 @@ export const attendanceApi = {
 
     // Add a new subject (College)
     addSubject: async (subjectName) => {
-        const response = await api.post('/attendance/subjects/add',   { subjectName });
+        const response = await api.post('/attendance/subjects/add', { subjectName });
         return response.data;
     },
 
     // Delete a subject (College)
     deleteSubject: async (subjectName) => {
         const response = await api.delete(`/attendance/subjects/${subjectName}`);
+        return response.data;
+    },
+
+    // Mark subject attendance (alias for markCollegeSubject, used by CollegeAttendance component)
+    markSubjectAttendance: async (subjectName, status) => {
+        const response = await api.post('/attendance/college', { subjectName, status });
         return response.data;
     }
 };

@@ -10,9 +10,9 @@
 import api from "./axiosInstance";
 
 export const quizApi = {
-  generateQuiz: async (topic) => {
-    const response = await api.post("/quiz/generate", { topic });
-    return response.data; // ✅ FIX
+  generateQuiz: async (topic, difficulty = "medium") => {
+    const response = await api.post("/quiz/generate", { topic, difficulty });
+    return response.data;
   },
 
   submitQuiz: async (quizId, answers) => {
@@ -20,3 +20,4 @@ export const quizApi = {
     return response.data;
   }
 };
+

@@ -225,10 +225,20 @@ const {
 // ================= SCHOOL =================
 exports.markSchoolAttendance = async (req, res) => {
   try {
-    const { isPresent, date } = req.body;
+    // Accept both 'isPresent' (boolean) and 'status' (string) formats
+    let { isPresent, status, date } = req.body;
 
-    if (isWeekend(date, "school")) {
-      return res.status(400).json({ message: "No classes on Sunday" });
+    // Convert status string to isPresent boolean if needed
+    if (status !== undefined) {
+      isPresent = status === 'Present';
+    }
+
+    // Use today's date if not provided
+    const targetDate = date ? new Date(date) : new Date();
+    targetDate.setHours(0, 0, 0, 0);
+
+    if (isWeekend(targetDate, "school")) {
+      return res.status(400).json({ success: false, message: "No classes on Sunday" });
     }
 
     let attendance = await Attendance.findOne({ user: req.user._id });
@@ -237,11 +247,10 @@ exports.markSchoolAttendance = async (req, res) => {
       attendance = await Attendance.create({
         user: req.user._id,
         presentDates: [],
-        absentDates: []
+        absentDates: [],
+        schoolStreak: 0
       });
     }
-
-    const targetDate = new Date(date);
 
     const presentIndex = attendance.presentDates.findIndex(d =>
       sameDate(d, targetDate)
@@ -260,12 +269,12 @@ exports.markSchoolAttendance = async (req, res) => {
       if (isPresent) {
         attendance.absentDates.splice(absentIndex, 1);
         attendance.presentDates.push(targetDate);
-        attendance.schoolStreak += 1;
+        attendance.schoolStreak = (attendance.schoolStreak || 0) + 1;
       }
     } else {
       if (isPresent) {
         attendance.presentDates.push(targetDate);
-        attendance.schoolStreak += 1;
+        attendance.schoolStreak = (attendance.schoolStreak || 0) + 1;
       } else {
         attendance.absentDates.push(targetDate);
         attendance.schoolStreak = 0;
@@ -283,30 +292,42 @@ exports.markSchoolAttendance = async (req, res) => {
     );
 
     res.json({
+      success: true,
       message: "Attendance updated",
       percentage,
       status: calculateStatus(percentage),
-      streak: attendance.schoolStreak
+      streak: attendance.schoolStreak || 0
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 // ================= COLLEGE =================
 exports.markSubjectAttendance = async (req, res) => {
   try {
-    const { subjectName, isPresent, date } = req.body;
+    // Accept both 'isPresent' (boolean) and 'status' (string) formats
+    let { subjectName, isPresent, status, date } = req.body;
 
-    if (isWeekend(date, "college")) {
-      return res.status(400).json({ message: "No classes on weekend" });
+    // Convert status string to isPresent boolean if needed
+    if (status !== undefined) {
+      isPresent = status === 'Present';
+    }
+
+    // Use today's date if not provided
+    const targetDate = date ? new Date(date) : new Date();
+    targetDate.setHours(0, 0, 0, 0);
+
+    if (isWeekend(targetDate, "college")) {
+      return res.status(400).json({ success: false, message: "No classes on weekend" });
     }
 
     const attendance = await Attendance.findOne({ user: req.user._id });
 
     if (!attendance || attendance.subjects.length === 0) {
       return res.status(400).json({
+        success: false,
         message: "Subjects not set up"
       });
     }
@@ -317,11 +338,10 @@ exports.markSubjectAttendance = async (req, res) => {
 
     if (!subject) {
       return res.status(400).json({
+        success: false,
         message: "Invalid subject"
       });
     }
-
-    const targetDate = new Date(date);
 
     const presentIndex = subject.presentDates.findIndex(d =>
       sameDate(d, targetDate)
@@ -340,12 +360,12 @@ exports.markSubjectAttendance = async (req, res) => {
       if (isPresent) {
         subject.absentDates.splice(absentIndex, 1);
         subject.presentDates.push(targetDate);
-        subject.streak += 1;
+        subject.streak = (subject.streak || 0) + 1;
       }
     } else {
       if (isPresent) {
         subject.presentDates.push(targetDate);
-        subject.streak += 1;
+        subject.streak = (subject.streak || 0) + 1;
       } else {
         subject.absentDates.push(targetDate);
         subject.streak = 0;
@@ -363,14 +383,15 @@ exports.markSubjectAttendance = async (req, res) => {
     );
 
     res.json({
+      success: true,
       subject: subject.subjectName,
       percentage,
       status: calculateStatus(percentage),
-      streak: subject.streak
+      streak: subject.streak || 0
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -380,33 +401,75 @@ exports.getAttendance = async (req, res) => {
     const attendance = await Attendance.findOne({ user: req.user._id });
 
     if (!attendance) {
-      console.log("not found");
-      return res.status(200).json({ found: false });
-    }
-
-    if (req.user.educationLevel === "school") {
-      const totalDays =
-        attendance.presentDates.length + attendance.absentDates.length;
-
-      return res.json({
-        found: true,
-        type: "school",
-        presentDates: attendance.presentDates,
-        absentDates: attendance.absentDates,
-        totalDays,
-        streak: attendance.schoolStreak
+      return res.status(200).json({
+        success: true,
+        found: false,
+        data: [],
+        subjects: []
       });
     }
 
-    // COLLEGE
-    console.log("here");
+    if (req.user.educationLevel === "School") {
+      // Convert dates to history array format the frontend expects
+      const history = [];
+
+      // Add present dates
+      attendance.presentDates.forEach(date => {
+        history.push({
+          _id: `present_${new Date(date).getTime()}`,
+          date: date,
+          status: 'Present'
+        });
+      });
+
+      // Add absent dates
+      attendance.absentDates.forEach(date => {
+        history.push({
+          _id: `absent_${new Date(date).getTime()}`,
+          date: date,
+          status: 'Absent'
+        });
+      });
+
+      // Sort by date descending
+      history.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      return res.json({
+        success: true,
+        found: true,
+        type: "school",
+        data: history,
+        totalDays: history.length,
+        streak: attendance.schoolStreak || 0
+      });
+    }
+
+    // COLLEGE - calculate percentages for each subject
+    const subjects = attendance.subjects.map(s => {
+      const total = s.presentDates.length + s.absentDates.length;
+      const percentage = total > 0
+        ? Math.round((s.presentDates.length / total) * 100)
+        : 0;
+
+      return {
+        _id: s._id,
+        subjectName: s.subjectName,
+        present: s.presentDates.length,
+        total: total,
+        percentage: percentage,
+        streak: s.streak || 0,
+        presentDates: s.presentDates // Include for calendar view
+      };
+    });
+
     return res.json({
+      success: true,
       found: true,
       type: "college",
-      subjects: attendance.subjects
+      subjects: subjects
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

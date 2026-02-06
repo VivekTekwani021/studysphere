@@ -117,6 +117,29 @@ exports.generateRoadmap = async (req, res) => {
 };
 
 
+// GET ACTIVE (FULL) ROADMAP
+exports.getActiveRoadmap = async (req, res) => {
+  try {
+    const roadmap = await Roadmap.findOne({
+      userId: req.user._id,
+      status: "active",
+    });
+
+    if (!roadmap) {
+      return res.json(null);
+    }
+
+    // Process backlogs before sending
+    processBacklogs(roadmap);
+    await roadmap.save();
+
+    res.json(roadmap);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 
 // GET TODAY TASKS
 exports.getTodayTasks = async (req, res) => {

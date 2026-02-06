@@ -102,7 +102,7 @@ exports.addSubject = async (req, res) => {
     const { subjectName } = req.body;
 
     if (!subjectName || !subjectName.trim()) {
-      return res.status(400).json({ message: "Subject name is required" });
+      return res.status(400).json({ success: false, message: "Subject name is required" });
     }
 
     let attendance = await Attendance.findOne({ user: req.user._id });
@@ -117,11 +117,11 @@ exports.addSubject = async (req, res) => {
 
     // Prevent duplicates
     const exists = attendance.subjects.find(
-      (s) => s.subjectName === subjectName.trim()
+      (s) => s.subjectName.toLowerCase() === subjectName.trim().toLowerCase()
     );
 
     if (exists) {
-      return res.status(400).json({ message: "Subject already exists" });
+      return res.status(400).json({ success: false, message: "Subject already exists" });
     }
 
     attendance.subjects.push({
@@ -134,12 +134,21 @@ exports.addSubject = async (req, res) => {
     await attendance.save();
 
     res.status(201).json({
+      success: true,
       message: "Subject added successfully",
-      subjects: attendance.subjects
+      subjects: attendance.subjects.map(s => ({
+        subjectName: s.subjectName,
+        present: s.presentDates.length,
+        total: s.presentDates.length + s.absentDates.length,
+        percentage: s.presentDates.length + s.absentDates.length > 0
+          ? Math.round((s.presentDates.length / (s.presentDates.length + s.absentDates.length)) * 100)
+          : 0,
+        streak: s.streak
+      }))
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -157,6 +166,7 @@ exports.deleteSubject = async (req, res) => {
 
     if (!attendance || attendance.subjects.length === 0) {
       return res.status(400).json({
+        success: false,
         message: "No subjects found"
       });
     }
@@ -167,6 +177,7 @@ exports.deleteSubject = async (req, res) => {
 
     if (index === -1) {
       return res.status(404).json({
+        success: false,
         message: "Subject not found"
       });
     }
@@ -175,11 +186,12 @@ exports.deleteSubject = async (req, res) => {
     await attendance.save();
 
     res.json({
+      success: true,
       message: "Subject deleted successfully",
       subjects: attendance.subjects
     });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
