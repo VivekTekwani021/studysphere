@@ -130,14 +130,48 @@ export const AuthProvider = ({ children }) => {
     setUser(prev => ({ ...prev, ...updatedData }));
   };
 
+  // 🌐 GOOGLE LOGIN
+  const googleLogin = async (credentialResponse) => {
+    setLoading(true);
+    try {
+      const response = await authApi.googleLogin(credentialResponse.credential);
+
+      if (response.success) {
+        const { token: newToken, user } = response;
+
+        if (!newToken || !user) {
+            toast.error("Invalid response from server");
+            return null;
+        }
+
+        localStorage.setItem('token', newToken);
+        setToken(newToken);
+        setUser(user);
+        setIsAuthenticated(true);
+        toast.success('Logged in with Google!');
+        return user;
+      }
+      
+      toast.error('Google login failed');
+      return null;
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      toast.error(error.response?.data?.message || 'Google login failed');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
-      token,           // 🔥 expose token for roadmap API
+      token,
       loading,
       isAuthenticated,
       login,
       register,
+      googleLogin, // 🔥 exposed
       logout,
       updateUser
     }}>

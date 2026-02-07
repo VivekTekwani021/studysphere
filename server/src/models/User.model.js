@@ -13,7 +13,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       select: false
     },
-    token:String,
+
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+
+    avatar: String,
+
+    token: String,
+
     educationLevel: {
       type: String,
       enum: ["School", "College"]
@@ -35,42 +45,43 @@ const userSchema = new mongoose.Schema(
     isOnboardingComplete: {
       type: Boolean,
       default: false
-    }, 
+    },
+
     learningHistory: [
-  {
-    topicName: {
-      type: String,
-      required: true
-    },
+      {
+        topicName: {
+          type: String,
+          required: true
+        },
 
-    quizScore: {
+        quizScore: {
+          type: Number,
+          default: 0
+        },
+
+        masteryStatus: {
+          type: String,
+          enum: ["Strong", "Average", "Weak"],
+          default: "Average"
+        },
+
+        completedAt: {
+          type: Date,
+          default: Date.now
+        }
+      }
+    ],
+
+    weakTopics: [
+      {
+        type: String
+      }
+    ],
+
+    totalStudyTime: {
       type: Number,
-      default: 0
-    },
-
-    masteryStatus: {
-      type: String,
-      enum: ["Strong", "Average", "Weak"],
-      default: "Average"
-    },
-
-    completedAt: {
-      type: Date,
-      default: Date.now
+      default: 0 // in minutes
     }
-  }
-],
-
-weakTopics: [
-  {
-    type: String
-  }
-],
-
-totalStudyTime: {
-  type: Number,
-  default: 0 // in minutes
-}
 
   },
   { timestamps: true }

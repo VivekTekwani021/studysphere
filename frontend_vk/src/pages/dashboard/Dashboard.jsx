@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   CalendarCheck, BookOpen, Trophy, Map, HelpCircle,
   TrendingUp, Flame, Target, ChevronRight, Sparkles,
-  Clock, Zap, Award, ArrowRight, Play, CheckCircle2
+  Clock, Zap, Award, ArrowRight, Play, CheckCircle2, FileText
 } from 'lucide-react';
 import { attendanceApi } from '../../api/attendance.api';
 import { clsx } from 'clsx';
@@ -103,6 +103,18 @@ const Dashboard = () => {
       iconBg: 'bg-orange-100 dark:bg-orange-900/30'
     },
   ];
+
+  // Add Resume Analysis for all college students
+  if (user?.educationLevel === 'College') {
+    quickActions.push({
+      name: 'Resume Analysis',
+      desc: 'Get AI feedback on your resume',
+      icon: FileText,
+      path: '/placement/resume',
+      gradient: 'from-violet-500 to-purple-600',
+      iconBg: 'bg-violet-100 dark:bg-violet-900/30'
+    });
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">

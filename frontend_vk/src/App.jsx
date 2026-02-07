@@ -95,6 +95,12 @@ import GeneratePDF from './pages/learning/GeneratePDF';
 // ✅ ROADMAP PAGE
 import RoadmapPage from './pages/roadmap/RoadmapPage';
 
+// ✅ RESUME SCORER (Career Catalyst)
+import ResumeScorer from './pages/placement/ResumeScorer';
+
+// ✅ STUDY ROOMS (Collaborative Learning)
+import StudyRooms from './pages/studyroom/StudyRooms';
+import StudyRoomView from './pages/studyroom/StudyRoomView';
 
 function App() {
   return (
@@ -127,6 +133,7 @@ function App() {
               <Route path="/roadmap" element={<RoadmapPage />} />
 
               <Route path="/placement" element={<Placement />} />
+              <Route path="/placement/resume" element={<ResumeScorer />} />
               <Route path="/profile" element={<Profile />} />
 
               {/* 🧠 Quiz Routes (unchanged) */}
@@ -134,6 +141,9 @@ function App() {
               <Route path="/quiz/attempt" element={<QuizAttempt />} />
               <Route path="/quiz/result" element={<QuizResult />} />
 
+              {/* 👥 Study Rooms (Collaborative) */}
+              <Route path="/study-rooms" element={<StudyRooms />} />
+              <Route path="/study-rooms/:id" element={<StudyRoomView />} />
 
 
             </Route>

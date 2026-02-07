@@ -22,6 +22,8 @@ app.use("/api/quiz", require("./routes/quiz.routes"));
 app.use("/api/pdf", require("./routes/pdf.routes"));
 app.use("/api/habit", require("./routes/habit.routes"));
 app.use("/api/placement", require("./routes/placement.routes"));
+app.use("/api/resume", require("./routes/resume.routes"));
+app.use("/api/rooms", require("./routes/studyRoom.routes"));
 app.use("/api/roadmap", require("./routes/roadmap.routes"));
 //app.use("/api/roadmap", require("./routes/roadmap.routes"));
 

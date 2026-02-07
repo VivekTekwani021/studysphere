@@ -12,7 +12,8 @@ import {
   Sparkles,
   ChevronRight,
   Moon,
-  Sun
+  Sun,
+  Video
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -28,6 +29,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', color: 'text-blue-500' },
     { name: 'Learning Hub', icon: BookOpen, path: '/learning', color: 'text-purple-500' },
     { name: 'Quiz', icon: HelpCircle, path: '/quiz', color: 'text-indigo-500' },
+    { name: 'Study Rooms', icon: Video, path: '/study-rooms', color: 'text-cyan-500' },
   ];
 
   const trackingMenuItems = [
@@ -37,9 +39,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   const otherMenuItems = [];
 
-  // Conditional placement link
-  if (user?.isPlacementEnabled) {
+  // Show placement links for all college students
+  if (user?.educationLevel === 'College') {
     otherMenuItems.push({ name: 'Placement', icon: Briefcase, path: '/placement', color: 'text-amber-500' });
+    otherMenuItems.push({ name: 'Resume Analysis', icon: User, path: '/placement/resume', color: 'text-violet-500' });
   }
 
   const NavItem = ({ item }) => {
