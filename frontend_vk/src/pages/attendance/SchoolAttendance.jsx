@@ -40,13 +40,13 @@ const SchoolAttendance = () => {
     fetchHistory();
   }, []);
 
-  const handleMarkPresent = async () => {
+  const handleMarkAttendance = async (status) => {
     try {
       setMarking(true);
-      const response = await attendanceApi.markSchoolDaily('Present');
+      const response = await attendanceApi.markSchoolDaily(status);
       if (response.success) {
-        toast.success('Marked Present!');
-        setTodayStatus('Present');
+        toast.success(`Marked ${status}!`);
+        setTodayStatus(status);
         fetchHistory();
       }
     } catch (error) {
@@ -190,24 +190,40 @@ const SchoolAttendance = () => {
         <p className="text-blue-100 text-sm mb-4">{format(new Date(), 'EEEE, MMMM do, yyyy')}</p>
 
         {todayStatus ? (
-          <div className="flex items-center justify-center gap-3 p-4 rounded-xl bg-white/20">
-            <CheckCircle className="w-8 h-8" />
+          <div className={clsx("flex items-center justify-center gap-3 p-4 rounded-xl",
+            todayStatus === 'Present' ? "bg-white/20" : "bg-red-500/20"
+          )}>
+            {todayStatus === 'Present' ? (
+              <CheckCircle className="w-8 h-8" />
+            ) : (
+              <X className="w-8 h-8" />
+            )}
             <span className="text-xl font-semibold">Marked {todayStatus}</span>
           </div>
         ) : (
-          <button
-            onClick={handleMarkPresent}
-            disabled={marking}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-emerald-500 hover:bg-emerald-400 rounded-xl font-semibold transition-colors disabled:opacity-50 shadow-lg"
-          >
-            {marking ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
-            Mark Present
-          </button>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => handleMarkAttendance('Present')}
+              disabled={marking}
+              className="flex items-center justify-center gap-2 py-4 bg-emerald-500 hover:bg-emerald-400 rounded-xl font-semibold transition-colors disabled:opacity-50 shadow-lg"
+            >
+              {marking ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+              Mark Present
+            </button>
+            <button
+              onClick={() => handleMarkAttendance('Absent')}
+              disabled={marking}
+              className="flex items-center justify-center gap-2 py-4 bg-red-500 hover:bg-red-400 rounded-xl font-semibold transition-colors disabled:opacity-50 shadow-lg"
+            >
+              {marking ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5" />}
+              Mark Absent
+            </button>
+          </div>
         )}
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className={clsx("rounded-xl p-4 border shadow-sm text-center", isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200")}>
           <TrendingUp className="w-4 h-4 text-blue-500 mx-auto mb-2" />
           <p className={clsx("text-2xl font-bold", isDark ? "text-white" : "text-slate-900")}>{percentage}%</p>
@@ -222,13 +238,24 @@ const SchoolAttendance = () => {
 
         <div
           className={clsx("rounded-xl p-4 border shadow-sm text-center cursor-pointer transition-all",
-            isDark ? "bg-slate-800 border-slate-700 hover:border-blue-500" : "bg-white border-slate-200 hover:border-blue-300 hover:shadow-md"
+            isDark ? "bg-slate-800 border-slate-700 hover:border-emerald-500" : "bg-white border-slate-200 hover:border-emerald-300 hover:shadow-md"
           )}
           onClick={() => { setShowCalendar(true); setCalendarMonth(new Date()); }}
         >
-          <Calendar className="w-4 h-4 text-indigo-500 mx-auto mb-2" />
-          <p className={clsx("text-2xl font-bold", isDark ? "text-white" : "text-slate-900")}>{presentDays}/{totalDays}</p>
+          <CheckCircle className="w-4 h-4 text-emerald-500 mx-auto mb-2" />
+          <p className={clsx("text-2xl font-bold", isDark ? "text-white" : "text-slate-900")}>{presentDays}</p>
           <p className={clsx("text-xs", isDark ? "text-slate-400" : "text-slate-500")}>Present Days</p>
+        </div>
+
+        <div
+          className={clsx("rounded-xl p-4 border shadow-sm text-center cursor-pointer transition-all",
+            isDark ? "bg-slate-800 border-slate-700 hover:border-red-500" : "bg-white border-slate-200 hover:border-red-300 hover:shadow-md"
+          )}
+          onClick={() => { setShowCalendar(true); setCalendarMonth(new Date()); }}
+        >
+          <X className="w-4 h-4 text-red-500 mx-auto mb-2" />
+          <p className={clsx("text-2xl font-bold", isDark ? "text-white" : "text-slate-900")}>{history.length - presentDays}</p>
+          <p className={clsx("text-xs", isDark ? "text-slate-400" : "text-slate-500")}>Absent Days</p>
         </div>
       </div>
 

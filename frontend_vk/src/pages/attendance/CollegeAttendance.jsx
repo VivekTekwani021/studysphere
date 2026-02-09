@@ -68,12 +68,12 @@ const CollegeAttendance = () => {
     }
   };
 
-  const handleMarkAttendance = async (subjectName) => {
+  const handleMarkAttendance = async (subjectName, status) => {
     try {
       setMarkingSubject(subjectName);
-      const response = await attendanceApi.markSubjectAttendance(subjectName, 'Present');
+      const response = await attendanceApi.markSubjectAttendance(subjectName, status);
       if (response.success) {
-        toast.success(`Marked present for ${subjectName}`);
+        toast.success(`Marked ${status} for ${subjectName}`);
         fetchSubjects();
       }
     } catch (error) {
@@ -253,20 +253,25 @@ const CollegeAttendance = () => {
 
               <div className="p-4 space-y-4">
                 {/* Stats */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <TrendingUp className={getPercentageColor(subject.percentage)} />
-                    <span className={clsx("text-2xl font-bold", getPercentageColor(subject.percentage))}>
+                    <span className={clsx("text-3xl font-bold", getPercentageColor(subject.percentage))}>
                       {subject.percentage}%
                     </span>
                   </div>
-                  <span className={clsx("text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
-                    {subject.present}/{subject.total} classes
-                  </span>
+                  <div className="text-right">
+                    <p className={clsx("text-lg font-semibold", isDark ? "text-white" : "text-slate-900")}>
+                      {subject.present}/{subject.total} <span className="text-sm font-normal">Classes</span>
+                    </p>
+                    <p className={clsx("text-xs", isDark ? "text-slate-400" : "text-slate-500")}>
+                      Absent: {subject.total - subject.present}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className={clsx("h-2 rounded-full overflow-hidden", isDark ? "bg-slate-700" : "bg-slate-100")}>
+                <div className={clsx("h-2 rounded-full overflow-hidden mb-4", isDark ? "bg-slate-700" : "bg-slate-100")}>
                   <div
                     className={clsx("h-full rounded-full transition-all",
                       subject.percentage >= 75 ? "bg-emerald-500" :
@@ -276,19 +281,33 @@ const CollegeAttendance = () => {
                   />
                 </div>
 
-                {/* Mark Present Button */}
-                <button
-                  onClick={() => handleMarkAttendance(subject.subjectName)}
-                  disabled={markingSubject === subject.subjectName}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-medium disabled:opacity-50 shadow-md"
-                >
-                  {markingSubject === subject.subjectName ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <CheckCircle className="w-5 h-5" />
-                  )}
-                  Mark Present
-                </button>
+                {/* Action Buttons */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => handleMarkAttendance(subject.subjectName, 'Present')}
+                    disabled={markingSubject === subject.subjectName}
+                    className="flex items-center justify-center gap-2 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-medium disabled:opacity-50 shadow-md"
+                  >
+                    {markingSubject === subject.subjectName ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <CheckCircle className="w-4 h-4" />
+                    )}
+                    Present
+                  </button>
+                  <button
+                    onClick={() => handleMarkAttendance(subject.subjectName, 'Absent')}
+                    disabled={markingSubject === subject.subjectName}
+                    className="flex items-center justify-center gap-2 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors font-medium disabled:opacity-50 shadow-md"
+                  >
+                    {markingSubject === subject.subjectName ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <X className="w-4 h-4" />
+                    )}
+                    Absent
+                  </button>
+                </div>
               </div>
             </div>
           ))}
