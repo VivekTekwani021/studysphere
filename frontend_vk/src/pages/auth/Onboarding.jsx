@@ -52,47 +52,47 @@ const Onboarding = () => {
           <p className="text-gray-500 mt-2">Tell us a bit about your current education status.</p>
         </CardHeader>
         <CardContent className="space-y-8">
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* School Option */}
-            <div 
-              className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${educationLevel === 'School' ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-gray-200 hover:border-primary/50 hover:shadow-md'}`}
+            <div
+              className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${educationLevel === 'School' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:border-indigo-300 hover:shadow-md'}`}
               onClick={() => setEducationLevel('School')}
             >
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className={`p-4 rounded-full ${educationLevel === 'School' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500'}`}>
+                <div className={`p-4 rounded-full ${educationLevel === 'School' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}>
                   <School size={32} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">School Student</h3>
+                  <h3 className="font-semibold text-lg text-gray-900">School Student</h3>
                   <p className="text-sm text-gray-500 mt-1">For students in K-12. Track daily attendance and basic subjects.</p>
                 </div>
-                {educationLevel === 'School' && <CheckCircle className="text-primary animate-in fade-in zoom-in" size={24} />}
+                {educationLevel === 'School' && <CheckCircle className="text-indigo-600 animate-in fade-in zoom-in" size={24} />}
               </div>
             </div>
 
             {/* College Option */}
-            <div 
-              className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${educationLevel === 'College' ? 'border-secondary bg-secondary/5 ring-2 ring-secondary/20' : 'border-gray-200 hover:border-secondary/50 hover:shadow-md'}`}
+            <div
+              className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${educationLevel === 'College' ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200' : 'border-gray-200 hover:border-purple-300 hover:shadow-md'}`}
               onClick={() => setEducationLevel('College')}
             >
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className={`p-4 rounded-full ${educationLevel === 'College' ? 'bg-secondary text-white' : 'bg-gray-100 text-gray-500'}`}>
+                <div className={`p-4 rounded-full ${educationLevel === 'College' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-500'}`}>
                   <BookOpen size={32} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">College Student</h3>
+                  <h3 className="font-semibold text-lg text-gray-900">College Student</h3>
                   <p className="text-sm text-gray-500 mt-1">For university students. Track subject-wise attendance and advanced topics.</p>
                 </div>
-                {educationLevel === 'College' && <CheckCircle className="text-secondary animate-in fade-in zoom-in" size={24} />}
+                {educationLevel === 'College' && <CheckCircle className="text-purple-600 animate-in fade-in zoom-in" size={24} />}
               </div>
             </div>
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button 
-              size="lg" 
-              onClick={handleComplete} 
+            <Button
+              size="lg"
+              onClick={handleComplete}
               isLoading={loading}
               className="w-full md:w-auto"
               disabled={!educationLevel}
