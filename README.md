@@ -245,7 +245,7 @@ StudySphere/
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/studysphere
 # Or MongoDB Atlas:
-# MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/studysphere
+
 
 JWT_SECRET=your_jwt_secret_key_here
 GROQ_API_KEY=your_groq_api_key_here
