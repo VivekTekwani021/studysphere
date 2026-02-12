@@ -9,15 +9,7 @@ const authRoutes = require("./routes/auth.routes");
 const app = express();
 
 // CORS configuration
-app.use(cors({
-  //origin: ['http://localhost:5173', 'http://localhost:3000' , 'https://studysphere-nu-one.vercel.app'], // Vite default port and React default
-  origin: 'https://studysphere-nu-one.vercel.app',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.options("*", cors());   // 🔥 ADD THIS LINE
-
+app.use(cors());
 app.use(express.json());
 
 require("./cron/roadmap.cron");
